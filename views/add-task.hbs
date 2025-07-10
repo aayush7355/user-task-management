@@ -1,0 +1,30 @@
+<h1>Add Task</h1>
+{{#if error}}
+<p class="error">{{error}}</p>
+{{/if}}
+
+<form method="POST" action="/add-task">
+    <div>
+        <label>User:</label>
+        <select name="user_id" required>
+            <option value="">Select User</option>
+            {{#each users}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div>
+        <label>Task Name:</label>
+        <input type="text" name="task_name" required>
+    </div>
+    <div>
+        <label>Task Type:</label>
+        <select name="task_type" required>
+            <option value="Pending">Pending</option>
+            <option value="Done">Done</option>
+        </select>
+    </div>
+    <button type="submit">Add Task</button>
+</form>
+
+<a href="/" class="back">Back</a>

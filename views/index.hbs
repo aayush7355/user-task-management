@@ -1,0 +1,35 @@
+<h1>Task Manager</h1>
+
+<div class="nav-links">
+    <a href="/add-user">Add User</a>
+    <a href="/add-task">Add Task</a>
+    <a href="/export">Export to Excel</a>
+</div>
+
+<h2>Users</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Tasks</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each users}}
+        <tr>
+            <td>{{id}}</td>
+            <td>{{name}}</td>
+            <td>{{email}}</td>
+            <td>{{mobile}}</td>
+            <td><a href="#" onclick="fetchTasks({{id}})">View Tasks</a></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+<div id="tasks"></div>
+
+<script src="/js/scripts.js"></script>

@@ -1,0 +1,23 @@
+<h1>Add User</h1>
+{{#if error}}
+<p class="error">{{error}}</p>
+{{/if}}
+
+<form id="userForm" method="POST" action="/add-user">
+    <div>
+        <label>Name:</label>
+        <input type="text" name="name" required>
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="email" name="email" id="email" required>
+    </div>
+    <div>
+        <label>Mobile:</label>
+        <input type="text" name="mobile" id="mobile" required>
+    </div>
+    <button type="submit">Add User</button>
+</form>
+
+<a href="/" class="back">Back</a>
+<script src="/js/validate.js"></script>
