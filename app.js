@@ -1,3 +1,5 @@
+require('dotenv').config(); // Add this at top
+
 const express = require('express');
 const { Model } = require('objection');
 const Knex = require('knex');
@@ -5,22 +7,23 @@ const path = require('path');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const exceljs = require('exceljs');
+const PORT = process.env.PORT || 3000;
 
-// Initialize Knex
+// Initialize Knex with env config
 const knex = Knex({
   client: 'mysql2',
   connection: {
-    host: 'localhost',
-    user: 'root',
-    password: 'aayush1234',
-    database: 'task_manager'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
   }
 });
 
 // Bind Objection to Knex
 Model.knex(knex);
 
-// User Model
+// Define Models
 class User extends Model {
   static get tableName() {
     return 'users';
@@ -39,7 +42,6 @@ class User extends Model {
   }
 }
 
-// Task Model
 class Task extends Model {
   static get tableName() {
     return 'tasks';
@@ -60,7 +62,7 @@ app.engine('hbs', exphbs.engine({
 }));
 app.set('view engine', 'hbs');
 
-// Routes
+// Routes (same as you had)
 app.get('/', async (req, res) => {
   const users = await User.query();
   res.render('index', { users });
@@ -103,8 +105,7 @@ app.get('/tasks/:userId', async (req, res) => {
 
 app.get('/export', async (req, res) => {
   const workbook = new exceljs.Workbook();
-  
-  // Users sheet
+
   const userSheet = workbook.addWorksheet('Users');
   userSheet.columns = [
     { header: 'ID', key: 'id', width: 10 },
@@ -112,11 +113,10 @@ app.get('/export', async (req, res) => {
     { header: 'Email', key: 'email', width: 30 },
     { header: 'Mobile', key: 'mobile', width: 15 }
   ];
-  
+
   const users = await User.query();
   users.forEach(user => userSheet.addRow(user));
 
-  // Tasks sheet
   const taskSheet = workbook.addWorksheet('Tasks');
   taskSheet.columns = [
     { header: 'ID', key: 'id', width: 10 },
@@ -124,18 +124,17 @@ app.get('/export', async (req, res) => {
     { header: 'Task Name', key: 'task_name', width: 30 },
     { header: 'Task Type', key: 'task_type', width: 15 }
   ];
-  
+
   const tasks = await Task.query();
   tasks.forEach(task => taskSheet.addRow(task));
 
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.setHeader('Content-Disposition', 'attachment; filename=users_tasks.xlsx');
-  
+
   await workbook.xlsx.write(res);
   res.end();
 });
 
-// Start server
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
